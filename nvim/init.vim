@@ -4,6 +4,9 @@ Plug 'preservim/nerdtree'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'morhetz/gruvbox'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
+Plug 'itchyny/lightline.vim'
+Plug 'ianks/vim-tsx'
+Plug 'leafgarland/typescript-vim'
 
 call plug#end()
 
@@ -34,36 +37,36 @@ let g:NERDTreeDirArrowCollapsible = '▾'
 
 " coc config
 let g:coc_global_extensions = [
-\ 'coc-snippets',
-\ 'coc-pairs',
-\ 'coc-tsserver',
-\ 'coc-eslint', 
-\ 'coc-prettier', 
-\ 'coc-json', 
+  \ 'coc-tslint-plugin',
+  \ 'coc-python',
+  \ 'coc-emmet',
+  \ 'coc-css',
+  \ 'coc-html',
+  \ 'coc-yank',
+  \ 'coc-snippets',
+  \ 'coc-pairs',
+  \ 'coc-tsserver',
+  \ 'coc-eslint', 
+  \ 'coc-prettier', 
+  \ 'coc-json' 
 \ ]
 " from readme
 " if hidden is not set, TextEdit might fail.
-set hidden " Some servers have issues with backup files, see #649 set nobackup set nowritebackup  Better display for messages set cmdheight=2 " You will have bad experience for diagnostic messages when it"s default 4000.
+set hidden
 set updatetime=300
-
-" no ins-completition messages
+set nobackup
+set nowritebackup
+set cmdheight=2
+set updatetime=300
 set shortmess+=c
+set signcolumn=yes
 
-" Always show the signcolumn, otherwise it would shift the text each time
-" diagnostics appear/become resolved.
-if has ("patch-8.1.1564") 
-" Recently vim can merge signcolumn and number column into one
-	set signcolumn=number
-    else
-	set signcolumn=yes
-endif
 
 
 inoremap <silent><expr> <TAB>
   \ pumvisible() ? "\<C-n>" :
   \ <SID>check_back_space() ? "\<TAB>" : 
   \ coc#refresh()
-
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 function! s:check_back_space() abort
@@ -71,8 +74,7 @@ function! s:check_back_space() abort
   return !col || getline('.')[col - 1] =~# '\s'
 endfunction
 
-
-
+inoremap <silent><expr><c-space> coc#refresh()
 " Use `[g` and `]g` to navigate diagnostics
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
@@ -86,7 +88,7 @@ nmap <silent> gr <Plug>(coc-references)
 
 " Use k to show documentation
 "
-nnoremap <silent> K : call <SID>show_documentation()<CR>
+nnoremap <silent> K :call <SID>show_documentation()<CR>
 
 function! s:show_documentation()
   if (index(['vim', 'help'], &filetype) >= 0)
@@ -96,7 +98,6 @@ function! s:show_documentation()
   endif
 endfunction
 " Use <c-space> to trigger completion.
-inoremap <silent><expr><c-space> coc#refresh()
 
 " Remap for rename current word
 nmap <F2> <Plug>(coc-rename)
