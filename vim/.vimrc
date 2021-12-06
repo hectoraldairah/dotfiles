@@ -1,181 +1,217 @@
-set nocompatible " improved mode
+set encoding=UTF-8
 
-"
-" Options
-"
-set number         " Show current line number as absolute number
-set relativenumber " Show relative line numbers otherwise
-set numberwidth=2  " Numbers are 1 char wide
+set nocompatible
 
-set tabstop=4     " One tab = 4 spaces
-set shiftwidth=2  " One tab press = 2 spaces
-set softtabstop=2 expandtab " Tab => spaces
-set linebreak
-set autoindent
-filetype plugin indent on
+"Enable type file detection. Vim will be able to try to detect the type of file in use.
+filetype on
 
-set backspace=indent,eol,start " Allow backspacing over indentation, line breaks and insertion starts
+"Enable plugins and load plugin for the detected file type.
+filetype plugin on
 
-if $COLORSCHEME == 'light'
-  set background=light
-else
-  set background=dark
-endif
-set laststatus=2
-set showmode " Show mode at bottom
-set showcmd  " Show incomplete commands
+"Load an indent file for the detected file type.
+filetype indent on
 
-set noswapfile
-set nobackup
-set nowb
-
-set history=1000  " Store longer history
-
-set undofile            " Persist undo history between sessions
-set undodir=~/.vim/undo " ...but store all the persisted files in a single directory
-
-set incsearch  " Do highlight phrases while searching
-set nohlsearch " Don't continue to highlight searched phrases
-set ignorecase " Case insensitive search
-set smartcase  " ...unless you type a capital
-
-" Add the silver searcher to the runtimepath
-set rtp+=/usr/local/opt/fzf
-
-" Automatically read changed files from disk, see https://unix.stackexchange.com/a/383044
-set autoread
-au FocusGained,BufEnter * :checktime " Also reload when we switch buffers
-
-"
-" Plugins
-"
-call plug#begin('~/.vim/plugged')
-Plug 'dracula/vim'
-Plug 'tpope/vim-sensible' " Sensible defaults
-Plug 'scrooloose/nerdtree'
-Plug 'Aldlevine/nerdtree-git-plugin'
-Plug 'altercation/vim-colors-solarized'
-Plug 'pangloss/vim-javascript'
-" Note: This should be mxw/vim-jsx, but there's currently a bug that makes
-" comments in the JSX nodes be wrongly highlighted. This is the branch whos PR
-" fixes it. Ref mxw/vim-jsx#165 and mxw/vim-jsx#164
-Plug 'jiulongw/vim-jsx', { 'branch': 'comments' }
-Plug 'christoomey/vim-tmux-navigator'
-Plug 'hail2u/vim-css3-syntax'
-Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
-Plug 'jiangmiao/auto-pairs' " Insert parenthesis etc in pairs
-Plug 'unkiwii/vim-nerdtree-sync' " Sync open file to NERDTree
-Plug 'tpope/vim-abolish' " Case-preserving search and replace :S
-Plug 'tpope/vim-surround'
-Plug 'w0rp/ale' " Async linting
-Plug 'editorconfig/editorconfig-vim'
-Plug 'jparise/vim-graphql'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'install --all' }
-Plug 'junegunn/fzf.vim'
-Plug 'airblade/vim-gitgutter'
-Plug 'tpope/vim-commentary'
-Plug 'reasonml-editor/vim-reason-plus'
-Plug 'tmux-plugins/vim-tmux-focus-events'
-Plug 'wincent/terminus'   " Better vim + tmux
-Plug 'leafgarland/typescript-vim'
-Plug 'wellle/targets.vim'
-Plug 'ajh17/VimCompletesMe'
-Plug 'ap/vim-css-color'
-Plug 'octref/RootIgnore'  " Add .gitignore files to wildignore
-Plug 'tpope/vim-fugitive' " Necessary for the CTags stuff to work
-Plug 'slashmili/alchemist.vim'
-Plug 'elixir-editors/vim-elixir'
-Plug 'justinmk/vim-sneak'
-Plug 'flowtype/vim-flow'
-Plug 'vim-scripts/AutoComplPop'
-Plug 'gabrielelana/vim-markdown'
-Plug 'alvan/vim-closetag'
-
-call plug#end()
-
-" Set the leader options
-let mapleader = ' '
-
-" Configure NerdTree
-:set mouse=a
-let g:NERDTreeMouseMode=3 " Use NERDTree with a mouse
-nnoremap <c-\> :edit .<cr>
-let g:NERDTreeGitStatusNodeColorization=1 " Enable git status colorisation a la Atom
-let g:NERDTreeShowHidden=1 " Show dotfiles by default
-let loaded_netrwPlugin=1 " Disable netrw since we're going to hijack it with NERDTree anyway
-let NERDTreeRespectWildIgnore=1 " Respect wildignore
-let g:NERDTreeHijackNetrw = 1 " Use the split explorer model, hijack netrw
-let g:NERDTreeMinimalUI=1 " Hide 'Press ? for help' prompt
-
-" Configure vim-nerdtree-sync
-let g:nerdtree_sync_cursorline=1 " Enable syncing of active file to nerdtree
-
-" Configure color scheme
+"Turn syntax highlight on.
 syntax on
-colorscheme dracula
 
-" Configure flowtype, which we need for YouCompleteMe to work
-let g:flow#enable = 0 " Disable showing errors, ale does this for us
+" Mapping leader key
+let mapleader = ','
 
-" Configure JavaScript highlighting
-let g:javascript_plugin_jsdoc=1
-let g:javascript_plugin_flow=1
+"Set shif widhth to 4 spaces.
+set shiftwidth=4
 
-" Configure ale (linting)
-let g:ale_sign_column_always = 1
-let g:ale_sign_error = '💩'
-let g:ale_sign_warning = '⚠️'
-let g:ale_linters = {
-      \'javascript': ['flow']
-      \} " , 'eslint'
-let g:ale_javascript_prettier_use_local_config = 1
-let g:ale_javascript_eslint_suppress_missing_config = 1
-let g:ale_javascript_eslint_suppress_eslintignore = 1
-let g:ale_javascript_eslint_use_global = 0
-let g:ale_fixers = {
-      \'javascript': ['prettier']
-      \}
-let g:ale_completion_enabled = 1
+"Set tabm width to 4 columns
+set tabstop=4
 
-" Configure JSX highlighting
-let g:jsx_ext_required=0 " Highlight JSX in .js files
+"Use spaces instead of tabs
+set expandtab
 
-" Confgiure JSX autocomplete tag
+"Do not save backup files
+set nobackup
 
-let g:closetag_filenames = "*.html,*.xhtml,*.phtml,*.php,*.jsx"
+"Do not wrap lines. Allow long lines to extend as far as the line goes.
+set nowrap
 
-" Configure vim-tmux-navigator
-let g:tmux_navigator_save_on_switch=1
-let g:tmux_navigator_disable_when_zoomed = 1
-let g:tmux_navigator_no_mappings = 1
-" Want to disable 'navigate to previous', have to remap all the things
-nnoremap <silent> <C-h> :TmuxNavigateLeft<cr>
-nnoremap <silent> <C-j> :TmuxNavigateDown<cr>
-nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
-nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
-nnoremap <silent> <Nop> :TmuxNavigatePrevious<cr>
+"While searching though a file incrementally highlight matching characters as you type.
+set incsearch
 
-" Configure vim-fzf
-nmap <C-p> :Files<CR>
+"Ignore capital letters during search.
+set ignorecase
 
-" Configure vim-sneak
-let g:sneak#s_next = 1 " Jump to next match when pressing s again
-let g:sneak#label = 1  " Use label mode, similar to easymotion
+"Override the ignorecase option if searching for capital letters.
+"This will allow you to search specifically for capital letters.
+set smartcase
 
-" Open new splits to the right and the bottom
+" Show partial command you type in the last line of the screen.
+set showcmd
+
+" Show the mode you are on the last line.
+set showmode
+
+" Show matching words during a search.
+set showmatch
+
+" Use highlighting when doing a search.
+set hlsearch
+
+" Set the commands to save in history default number is 20.
+set history=1000
+" Add numbers to each line on the left-hand side.
+set number
+
+" Enable auto completion menu after pressing TAB
+set wildmenu
+
+" Make wildmenu behave like similar to Bash completion.
+set wildmode=list:longest
+
+" There are certain files that we would never want to edit with Vim.
+" Wildmenu will ignore files with these extensions.
+set wildignore=*.docx,*.jpg,*.png,*.gif,*.pdf,*.pyc,*.exe,*.flv,*.img,*.xlsx
+
+" Splits more naturally
 set splitbelow
 set splitright
 
-" Run :ALEFix on CTRL + F
-nmap <C-f> :ALEFix<CR>
+" PLUGINS ---------------------------------------------------------------- {{{
 
-" Set up ReasonML
-let g:LanguageClient_serverCommands = {
-    \ 'reason': ['ocaml-language-server', '--stdio'],
-    \ 'ocaml': ['ocaml-language-server', '--stdio'],
+call plug#begin('~/.vim/plugged')
+
+ " Syntax
+ Plug 'sheerun/vim-polyglot'
+ Plug 'prettier/vim-prettier', {
+  \ 'do': 'npm install --frozen-lockfile --production',
+  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte', 'yaml', 'html'] }
+
+ " Typing
+ Plug 'jiangmiao/auto-pairs'
+ Plug 'alvan/vim-closetag'
+
+ " Auto Complete
+ Plug 'neoclide/coc.nvim', {'branch': 'release'}
+ Plug 'glench/vim-jinja2-syntax'
+ 
+ Plug 'preservim/nerdtree'
+ Plug 'ryanoasis/vim-devicons'
+
+" Themes
+ Plug 'sainnhe/everforest'
+ Plug 'morhetz/gruvbox'
+
+" Status bar
+ Plug 'itchyny/lightline.vim' 
+ Plug 'vim-airline/vim-airline'
+ Plug 'vim-airline/vim-airline-themes'
+
+" IDE
+ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'install --all' }
+ Plug 'junegunn/fzf.vim'
+ Plug 'airblade/vim-rooter'
+
+" Git
+ Plug 'tpope/vim-fugitive'
+
+call plug#end()
+
+" }}}
+" Everforest theme config ------------------------------------------------{{{
+
+autocmd vimenter * ++nested colorscheme gruvbox
+set background=dark
+
+"" }}}
+
+
+" NERDTree ---------------------------------------------------------------- {{{
+
+autocmd VimEnter * NERDTree | wincmd p
+let NERDTreeShowHidden=1
+
+" }}}
+
+" Status bar config  ---------------------------------------------------------------- {{{
+
+set noshowmode
+
+let g:lightline = {
+      \ 'colorscheme': 'one',
+      \ }
+
+" }}}
+
+" AUTO CLOSE TAG CONFIG  ---------------------------------------------------------------- {{{ 
+" 
+" These are the file extensions where this plugin is enabled.
+let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.njk'
+
+" filenames like *.xml, *.xhtml, ...
+" This will make the list of non-closing tags self-closing in the specified files.
+"
+let g:closetag_xhtml_filenames = '*.xhtml,*.jsx'
+
+" filetypes like xml, html, xhtml, ...
+" These are the file types where this plugin is enabled.
+"
+let g:closetag_filetypes = 'html,xhtml,phtml'
+
+" filetypes like xml, xhtml, ...
+" This will make the list of non-closing tags self-closing in the specified files.
+"
+let g:closetag_xhtml_filetypes = 'xhtml,jsx'
+
+" integer value [0|1]
+" This will make the list of non-closing tags case-sensitive (e.g. `<Link>` will be closed while `<link>` won't.)
+"
+let g:closetag_emptyTags_caseSensitive = 1
+
+" dict
+" Disables auto-close if not in a "valid" region (based on filetype)
+"
+let g:closetag_regions = {
+    \ 'typescript.tsx': 'jsxRegion,tsxRegion',
+    \ 'javascript.jsx': 'jsxRegion',
+    \ 'typescriptreact': 'jsxRegion,tsxRegion',
+    \ 'javascriptreact': 'jsxRegion',
     \ }
 
-" Markdown
-let g:markdown_enable_spell_checking = 0
-let g:markdown_include_jekyll_support = 0
+" Shortcut for closing tags, default is '>'
+"
+let g:closetag_shortcut = '>'
 
+" Add > at current position without closing the current tag, default is ''
+"
+let g:closetag_close_shortcut = '<leader>>'
+" }}}
+
+" REMAPS ------------------------------------------------------------------ {{{
+
+" Save more faster with w
+noremap <leader>w :w<cr>  
+" Move easi between splits
+
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+" Move line up or down
+nnoremap <S-Up> :m-2<CR>
+nnoremap <S-Down> :m+<CR>
+inoremap <S-Up> <Esc>:m-2<CR>
+inoremap <S-Down> <Esc>:m+<CR>
+
+" FZF REMAPS 
+map <C-p> :Files<CR>
+map <C-b> :Buffers<CR>
+map <Leader><Leader> :Commands<CR>
+map <Leader>/ :execute 'Rg ' . input('Rg/')<CR>
+map <Leader>l :BLines<CR>
+map <Leader>gf :GF?<CR>
+
+" }}}
+
+
+" Git Fugitive REAMOPS
+noremap <leader>gs :G<CR>
+noremap <leader>gc :Git commit<CR>
+noremap <leader>gp :Git push<CR>
