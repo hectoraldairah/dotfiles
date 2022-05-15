@@ -1,8 +1,18 @@
-set encoding=UTF-8
+"       (_)                            / _(_)      
+" __   ___ _ __ ___     ___ ___  _ __ | |_ _  __ _ 
+" \ \ / / | '_ ` _ \   / __/ _ \| '_ \|  _| |/ _` |
+"  \ V /| | | | | | | | (_| (_) | | | | | | | (_| |
+"   \_/ |_|_| |_| |_|  \___\___/|_| |_|_| |_|\__, |
+"                                             __/ |
+"                                            |___/
 
+"Vim config by hectoraldairah
+set encoding=utf-8
+
+"Set no compatible for vim features
 set nocompatible
 
-"Enable type file detection. Vim will be able to try to detect the type of file in use.
+"Enable fyle detection
 filetype on
 
 "Enable plugins and load plugin for the detected file type.
@@ -37,10 +47,16 @@ set incsearch
 
 "Ignore capital letters during search.
 set ignorecase
-
 "Override the ignorecase option if searching for capital letters.
+
 "This will allow you to search specifically for capital letters.
 set smartcase
+
+" turn relative line numbers on
+set relativenumber
+
+" Show current line numver
+set nu
 
 " Show partial command you type in the last line of the screen.
 set showcmd
@@ -56,8 +72,6 @@ set hlsearch
 
 " Set the commands to save in history default number is 20.
 set history=1000
-" Add numbers to each line on the left-hand side.
-set number
 
 " Enable auto completion menu after pressing TAB
 set wildmenu
@@ -73,72 +87,73 @@ set wildignore=*.docx,*.jpg,*.png,*.gif,*.pdf,*.pyc,*.exe,*.flv,*.img,*.xlsx
 set splitbelow
 set splitright
 
-" PLUGINS ---------------------------------------------------------------- {{{
+" Remove highlight on no search
+set nohlsearch
 
+" Incremental Search
+set incsearch
+
+" Scroll control
+set scrolloff=8
+
+"" Set extra colum for plugins
+set signcolumn=yes
+
+" Show current line 
+set cursorline 
+set cursorcolumn
+
+"PLUGINS ----------------------------------------------
 call plug#begin('~/.vim/plugged')
 
- " Syntax
- Plug 'sheerun/vim-polyglot'
- Plug 'prettier/vim-prettier', {
-  \ 'do': 'npm install --frozen-lockfile --production',
-  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte', 'yaml', 'html'] }
-
- " Typing
- Plug 'jiangmiao/auto-pairs'
- Plug 'alvan/vim-closetag'
-
- " Auto Complete
- Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Syntax
+ Plug 'sheerun/vim-polyglot' 
  Plug 'glench/vim-jinja2-syntax'
- 
- Plug 'preservim/nerdtree'
- Plug 'ryanoasis/vim-devicons'
+
+" Formatting
+ Plug 'prettier/vim-prettier', { 'do': 'yarn install --frozen-lockfile --production' }
 
 " Themes
- Plug 'sainnhe/everforest'
  Plug 'morhetz/gruvbox'
 
 " Status bar
- Plug 'itchyny/lightline.vim' 
+ Plug 'itchyny/lightline.vim'
  Plug 'vim-airline/vim-airline'
  Plug 'vim-airline/vim-airline-themes'
 
 " IDE
- Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'install --all' }
+ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
  Plug 'junegunn/fzf.vim'
- Plug 'airblade/vim-rooter'
+ Plug 'sainnhe/everforest'
 
-" Git
+" NERDTree
+ Plug 'preservim/nerdtree'
+ Plug 'ryanoasis/vim-devicons'
+
+" Auto complete 
+ Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+ " Git
  Plug 'tpope/vim-fugitive'
+
+" Typing
+ Plug 'jiangmiao/auto-pairs'
+ Plug 'alvan/vim-closetag'
+
+" FloatTerm
+ Plug 'voldikss/vim-floaterm'
 
 call plug#end()
 
-" }}}
-" Everforest theme config ------------------------------------------------{{{
+"-------------------------------------------------------
 
-autocmd vimenter * ++nested colorscheme gruvbox
-set background=dark
-
-"" }}}
-
-
-" NERDTree ---------------------------------------------------------------- {{{
+" NERDTree --------------------------------------------
 
 autocmd VimEnter * NERDTree | wincmd p
 let NERDTreeShowHidden=1
-
-" }}}
-
-" Status bar config  ---------------------------------------------------------------- {{{
-
-set noshowmode
-
-let g:lightline = {
-      \ 'colorscheme': 'one',
-      \ }
-
-" }}}
-
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+let g:NERDTreeWinPos = "right"
+"---
 " AUTO CLOSE TAG CONFIG  ---------------------------------------------------------------- {{{ 
 " 
 " These are the file extensions where this plugin is enabled.
@@ -181,18 +196,46 @@ let g:closetag_shortcut = '>'
 " Add > at current position without closing the current tag, default is ''
 "
 let g:closetag_close_shortcut = '<leader>>'
-" }}}
 
-" REMAPS ------------------------------------------------------------------ {{{
 
-" Save more faster with w
-noremap <leader>w :w<cr>  
-" Move easi between splits
+" EVERFOREST THEME 
 
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
+if has('termguicolors')
+  set termguicolors
+endif
+
+set background=dark
+let g:everforest_background = 'hard' 
+let g:everforest_better_performance = 1
+let g:everforest_enable_italic = 1
+let g:everforest_ui_contrast = 'hight'
+let g:everforest_diagnostic_text_highlight = 1
+let g:everforest_diagnostic_line_highlight = 1
+let g:everforest_current_word = 'bold'
+let g:everforest_cursor = 'aqua'
+colorscheme everforest
+
+
+" AIRLINE CONFIG
+
+let g:airline_theme = 'everforest'
+let g:airline#extensions#hunks#enabled=0
+let g:airline#extensions#branch#enabled=1
+
+" FZF 
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
+let $FZF_DEFAULT_OPTS="--ansi --preview-window 'right:60%' --layout reverse --margin=1,4 --preview 'bat --color=always --style=header,grid --line-range :300 {}'"
+
+"REMAPS ------------------------------------------------
+
+"Save more faster with W 
+noremap <leader>w :w<CR>
+
+"NERD Tree maps
+nnoremap <leader>n :NERDTreeFocus<CR>
+nnoremap <C-n> :NERDTree<CR>
+nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
 
 " Move line up or down
 nnoremap <S-Up> :m-2<CR>
@@ -200,18 +243,47 @@ nnoremap <S-Down> :m+<CR>
 inoremap <S-Up> <Esc>:m-2<CR>
 inoremap <S-Down> <Esc>:m+<CR>
 
-" FZF REMAPS 
+" FZF REMAPS
+map <C-o> :GFiles<CR>
 map <C-p> :Files<CR>
 map <C-b> :Buffers<CR>
-map <Leader><Leader> :Commands<CR>
-map <Leader>/ :execute 'Rg ' . input('Rg/')<CR>
-map <Leader>l :BLines<CR>
-map <Leader>gf :GF?<CR>
-
-" }}}
-
 
 " Git Fugitive REAMOPS
 noremap <leader>gs :G<CR>
 noremap <leader>gc :Git commit<CR>
 noremap <leader>gp :Git push<CR>
+
+" Coc remap tab
+" use <tab> for trigger completion and navigate to the next complete item
+
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+" Use `[g` and `]g` to navigate diagnostics
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+
+" Use <c-space> to trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()
+
+" Move in splits
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
