@@ -118,7 +118,7 @@ export BAT_THEME="Catppuccin-mocha"
 
 
 # Deno
-export DENO_INSTALL="/Users/hectoraldairaguilarhernandez/.deno"
+export DENO_INSTALL=$HOME/.deno
 export PATH="$DENO_INSTALL/bin:$PATH"
 
 
